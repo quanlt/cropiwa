@@ -13,11 +13,11 @@ import java.lang.ref.WeakReference;
  */
 public class MatrixAnimator {
 
-    public void animate(Matrix initial, Matrix target, ValueAnimator.AnimatorUpdateListener listener) {
+    public void animate(Matrix initial, Matrix target, int duration, ValueAnimator.AnimatorUpdateListener listener) {
         ValueAnimator animator = ValueAnimator.ofObject(new MatrixEvaluator(), initial, target);
         animator.addUpdateListener(new SafeListener(listener));
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(0);
+        animator.setDuration(duration);
         animator.start();
     }
 

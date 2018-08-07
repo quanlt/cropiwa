@@ -157,7 +157,7 @@ class CropIwaImageView extends ImageView implements OnNewBoundsListener, ConfigC
             post(new Runnable() {
                 @Override
                 public void run() {
-                    animateToAllowedBounds();
+                    animateToAllowedBounds(200);
                 }
             });
             updateImageBounds();
@@ -165,13 +165,13 @@ class CropIwaImageView extends ImageView implements OnNewBoundsListener, ConfigC
         }
     }
 
-    private void animateToAllowedBounds() {
+    private void animateToAllowedBounds(int duration) {
         updateImageBounds();
         Matrix endMatrix = MatrixUtils.findTransformToAllowedBounds(
                 realImageBounds, imageMatrix,
                 allowedBounds);
         MatrixAnimator animator = new MatrixAnimator();
-        animator.animate(imageMatrix, endMatrix, new ValueAnimator.AnimatorUpdateListener() {
+        animator.animate(imageMatrix, endMatrix, duration, new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 imageMatrix.set((Matrix) animation.getAnimatedValue());
@@ -220,7 +220,7 @@ class CropIwaImageView extends ImageView implements OnNewBoundsListener, ConfigC
     public void onConfigChanged() {
         if (Math.abs(getCurrentScalePercent() - config.getScale()) > 0.001f) {
             setScalePercent(config.getScale());
-            animateToAllowedBounds();
+            animateToAllowedBounds(0);
         }
     }
 
@@ -355,7 +355,7 @@ class CropIwaImageView extends ImageView implements OnNewBoundsListener, ConfigC
                     return;
                 case MotionEvent.ACTION_CANCEL:
                 case MotionEvent.ACTION_UP:
-                    animateToAllowedBounds();
+                    animateToAllowedBounds(200);
                     return;
             }
             if (config.isImageScaleEnabled()) {
