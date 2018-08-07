@@ -157,7 +157,7 @@ class CropIwaImageView extends ImageView implements OnNewBoundsListener, ConfigC
             post(new Runnable() {
                 @Override
                 public void run() {
-                    animateToAllowedBounds(200);
+                    animateToAllowedBounds(0);
                 }
             });
             updateImageBounds();
