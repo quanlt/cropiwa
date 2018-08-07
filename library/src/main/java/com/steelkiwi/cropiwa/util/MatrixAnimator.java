@@ -17,7 +17,7 @@ public class MatrixAnimator {
         ValueAnimator animator = ValueAnimator.ofObject(new MatrixEvaluator(), initial, target);
         animator.addUpdateListener(new SafeListener(listener));
         animator.setInterpolator(new AccelerateDecelerateInterpolator());
-        animator.setDuration(200);
+        animator.setDuration(0);
         animator.start();
     }
 
@@ -70,6 +70,7 @@ public class MatrixAnimator {
             lastEnd = end;
         }
     }
+
     private static class SafeListener implements ValueAnimator.AnimatorUpdateListener {
 
         private WeakReference<ValueAnimator.AnimatorUpdateListener> wrapped;
