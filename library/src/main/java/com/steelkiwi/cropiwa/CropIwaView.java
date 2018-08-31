@@ -41,6 +41,7 @@ public class CropIwaView extends FrameLayout {
     private CropSaveCompleteListener cropSaveCompleteListener;
 
     private CropIwaResultReceiver cropIwaResultReceiver;
+    private SetImageListener setImageListener;
 
     public CropIwaView(Context context) {
         super(context);
@@ -112,14 +113,14 @@ public class CropIwaView extends FrameLayout {
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         //I think this "redundant" if statements improve code readability
         try {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            gestureDetector.onDown(ev);
-            return false;
-        }
-        if (overlayView.isResizing() || overlayView.isDraggingCropArea()) {
-            return false;
-        }
-        return true;
+            if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+                gestureDetector.onDown(ev);
+                return false;
+            }
+            if (overlayView.isResizing() || overlayView.isDraggingCropArea()) {
+                return false;
+            }
+            return true;
         } catch (IllegalArgumentException e) {
             //e.printStackTrace();
             return false;
@@ -208,11 +209,18 @@ public class CropIwaView extends FrameLayout {
         this.cropSaveCompleteListener = cropSaveCompleteListener;
     }
 
+    public void setImageListener(SetImageListener setImageListener) {
+        this.setImageListener = setImageListener;
+    }
+
     private class BitmapLoadListener implements CropIwaBitmapManager.BitmapLoadListener {
 
         @Override
         public void onBitmapLoaded(Uri imageUri, Bitmap bitmap) {
             setImage(bitmap);
+            if (setImageListener != null) {
+                setImageListener.onSuccess();
+            }
         }
 
         @Override
@@ -221,6 +229,9 @@ public class CropIwaView extends FrameLayout {
             overlayView.setDrawOverlay(false);
             if (errorListener != null) {
                 errorListener.onError(e);
+            }
+            if (setImageListener != null) {
+                setImageListener.onError(e);
             }
         }
     }
@@ -268,6 +279,12 @@ public class CropIwaView extends FrameLayout {
     }
 
     public interface ErrorListener {
+        void onError(Throwable e);
+    }
+
+    public interface SetImageListener {
+        void onSuccess();
+
         void onError(Throwable e);
     }
 }
